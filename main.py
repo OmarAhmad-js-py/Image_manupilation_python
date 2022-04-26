@@ -13,6 +13,9 @@ latest_path = None
 
 Tk().withdraw()
 
+if not os.path.exists("output"):
+    os.makedirs("output")
+
 
 def path_to_image(path):
     return Image.open(path)
@@ -225,9 +228,11 @@ def select_file():
     _path = filedialog.askopenfilename()
     if _path:
         image = Image.open(_path)
+        image = image.convert("RGB")
         # if the image is larger than 400 pixels in width resize it but keep the aspect ratio
         if image.width > 600:
             image = image.resize((600, int(image.height * 600 / image.width)), Image.ANTIALIAS)
+            image = image.convert("RGB")
             current = "output/resized.jpg"
             for i in range(1, 10):
                 if os.path.isfile(current):
@@ -241,7 +246,8 @@ def select_file():
             image.save("output/resized.jpg")
             path = "output/resized.jpg"
         else:
-            path = _path
+            image.save("output/temp.jpg")
+            path = "output/temp.jpg"
     else:
         print("No File Selected")
 
